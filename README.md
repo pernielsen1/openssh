@@ -4,5 +4,6 @@
 # line 4
 # git commit -a -m "A message"
 # git push
+# git add --all
  
 
