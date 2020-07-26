@@ -1,9 +1,4 @@
-# openssh
-# dafs
-# dfsadf nr 2
-# line 4
-# git commit -a -m "A message"
-# git push
-# git add --all
- 
+##  openssh
+A few openssl scripts performing some common found use cases
+DataKeyAndSign - exchange data with partner using aes key encrypted with RSA - key. Data sent also has digital signature.
 
