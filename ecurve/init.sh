@@ -1,6 +1,6 @@
 #!/bin/bash
 mkdir keys
 mkdir output
-./createkey.sh signing
-./createkey.sh encrypt
+./createkey.sh Alice
+./createkey.sh Bob
 
