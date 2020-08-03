@@ -1,6 +1,8 @@
 {
-"cipher":"3dae56dbac59c72321109f1f2a11235cca53f7f9e06bc4b8025276d6837f751e492a456ec4c89a2a98e72243471c5203614f25a3",
-"otherinfo":"4865726520697320736f6d65206f7468657220696e666f202d6e",
-"iv":"03260da9f2c0ceacb45598e2",
-"signature":"3045022100cfffb1ef0e783349bd410a4772b3fc2280e5729226ef67e95799211f03d74751022060d0b7df8048f51f5124aea5247683169dba2f9716cd040f1c7bc6a0682aafd5",
+"cipher":"e5WhSaehrP2kD0b56Y7AwroaukPQSRKjKt1sLCruvwRg7R54rBzZW0jdw8HM7MAQ6peFBg==",
+"otherInfo":"SGVyZSBpcyBzb21lIG90aGVyIGluZm8K",
+"iv":"ij9BM10oxnLqIF5LH+JJPg==",
+"signature":"MEQCICAwzPp3RVMwLg5lnaPcWabOF5J+YfGwtbcKWq/wf8L/AiB2R72E/hA9iCoXW+x+Abgq6sk1Mnmnu5ccLPOl/bLurQ==",
+"receiverPrivate":"keys/BobPrivate.pem",
+"senderPublic":"keys/AlicePublic.pem",
 }

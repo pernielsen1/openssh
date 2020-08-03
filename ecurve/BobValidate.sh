@@ -26,6 +26,10 @@ function binFileToHexString() {
 function hexStringToBin() {
    echo "$1" | xxd -r -p|cat
 }
+function base64StringToBin() {
+   echo "$1"|openssl base64 -d -A|cat
+}
+
 
 # OK here we go - have we been passed an input file name or just assuming default json.txt
 odir="output"
@@ -36,47 +40,49 @@ infile="$1"
 fi
 
 # The input variables names of keys for decrypting (privateKey) and verify the signature (publicCertificate)
-mykey="keys/BobPrivate.pem"
-partnerkey="keys/AlicePublic.pem"
 # ----------------------------------------$odi/--------
 # put infile in a variable and extract the properties
 # ------------------------------------------------
 json=`cat $infile`
+receiverPrivate=`jsonval2 "$json"  receiverPrivate`
+senderPublic=`jsonval2 "$json"  senderPublic`
 cipher=`jsonval2 "$json"  cipher`
-tag=${cipher:(-32)}
-otherinfo=`jsonval2 "$json"  otherinfo`
+otherInfo=`jsonval2 "$json"  otherinfo`
 iv=`jsonval2 "$json"  iv`
 echo "cipher is:" "$cipher"
 echo "iv is:" "$iv"
+base64StringToBin "$iv">output/ivR.bin
+ivHex=`binFileToHexString output/ivR.bin`
+
 #------------------------------------------------------------
 # derive the shared secret
 #------------------------------------------------------------
-openssl pkeyutl -derive -inkey  "$mykey" -peerkey "$partnerkey" -out "$odir"/shared_secret.bin
-shared_secret=`binFileToHexString "$odir"/shared_secret.bin`
+openssl pkeyutl -derive -inkey  "$receiverPrivate" -peerkey "$senderPublic" -out output/shared_secret.bin
+shared_secret=`binFileToHexString output/shared_secret.bin`
 #--------------------------------------------------------------------------
 # generate the key according to NIST
 # The integer 00000001 + shared secret + other info and calculate a sha256
 #-------------------------------------------------------------------------
 message="00000001""$shared_secret""$otherinfo"
-hexStringToBin "$message">"$odir"/message.bin
-openssl dgst -sha256 -binary "$odir"/message.bin>"$odir"/key.bin
-key=`binFileToHexString "$odir"/key.bin`
+hexStringToBin "$message">output/message.bin
+openssl dgst -sha256 -binary output/message.bin>output/key.bin
+key=`binFileToHexString output/key.bin`
 #--------------------------------------------------------------------------
 # do a aes-256  encryption GCM mode
 #-------------------------------------------------------------------------
 # iv="000000000000000000000000"
 # openssl cli does not support gcm functions so use a c program that interfaces directly instead
 # openssl enc -aes-256-gcm  -in "$odir"/plain.txt -out "$odir"/cipher.bin -K "$key" -iv $iv
-hexStringToBin "$cipher">"$odir"/cipher.bin
-./openssl_aes_gcm "$odir/cipher.bin" "$odir"/plain.txt "$key" "$iv" d
+base64StringToBin "$cipher">output/cipher.bin
+./openssl_aes_gcm output/cipher.bin output/plain.txt "$key" "$ivHex" d
 #--------------------------------------------------------------------------
 # verify signature
 #-------------------------------------------------------------------------
 signature=`jsonval2 "$json"  signature`
 echo "signature:" "$signature"
-hexStringToBin "$signature">"$odir"/r_signature.der
-openssl dgst -sha256 -verify "$partnerkey" -signature "$odir"/r_signature.der "$odir"/plain.txt
-cat "$odir/plain.txt"
+base64StringToBin "$signature">output/r_signature.der
+openssl dgst -sha256 -verify "$senderPublic" -signature output/r_signature.der output/plain.txt
+cat output/plain.txt
 
 
 

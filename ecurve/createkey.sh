@@ -11,7 +11,6 @@ Organisation="test"
 OrganisationUnit="My test unit"
 CommonName="My Company www.test.xyz.com"
 subject="/C=$Country/ST=$State/L=$Location/O=$Organisation/OU=$OrganisationUnit/CN=$CommonName"
-# either create a key or import a key (pkcs12) format
 echo  "creating key and cert for " "$1"
 openssl ecparam -name prime256v1 -genkey -noout  -out "$key"Private.pem
 # create a certificate from the private key

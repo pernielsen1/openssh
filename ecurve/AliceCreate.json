@@ -1,0 +1,8 @@
+{
+"senderPrivate":"keys/AlicePrivate.pem",
+"receiverPublic":"keys/BobPublic.pem",
+"otherInfo":"SGVyZSBpcyBzb21lIG90aGVyIGluZm8K",
+"plainFile":"plain.txt",
+"padding":"gcm"
+}
+
