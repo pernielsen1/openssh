@@ -1,0 +1,7 @@
+{
+"type":"ECDH",
+"priv":"0cd095bc576d3a974614d3706dfbd652d23e2ef05d2ddd562f8e0decec",
+"pub":"0400ca58ec0f16cfcd035a5698435d663b29573e660cd5a023cee4c4abea6800aa302e4044727722d669f19d465bec8b53ce3c3809cc6275203a12676e",
+"curveOID":"06052b8104001a",
+"curve":"sect233k1NISTCURVEK"
+}

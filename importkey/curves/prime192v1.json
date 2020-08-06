@@ -1,0 +1,7 @@
+{
+"type":"ECDH",
+"priv":"e2888eacfe87e79a3dcf190f62cfb2b4aa904719d1a86f86",
+"pub":"040b484600c2c862a2a679c87a2c040fcef102a9caf5baedf1f9ae6356e224b91a84d4ea8687e49a6ab8ac883f85107cbd",
+"curveOID":"06082a8648ce3d030101",
+"curve":"prime192v1NISTCURVEP"
+}

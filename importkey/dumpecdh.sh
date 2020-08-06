@@ -18,7 +18,7 @@ else
    outFile="$2"
 fi
 echo "key is....:" "$key" 
-echo "outFile is:" "$key" 
+echo "outFile is:" "$outFile" 
 
 #-------------------------------------------------------------- 
 # parse majority by reading text output 
@@ -51,13 +51,30 @@ for change in $changes; do
 done
 #---------------------------------------------------------------------------------------
 # Extract the curve Object Id by lookin in a der encoding - located after private key
-#---------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------
 derHex=`openssl ec -in "$key" -outform DER|xxd -p|tr -d '\n'`
-privLen=$((0x"${derHex:12:2}"))
-priv2=${derHex:14:privLen}
-oidPos="$((2*$privLen+18))"
+# check if long structure > 128 bytes
+is81=${derHex:2:2}
+echo "is81" "$is81"
+if [[ "$is81" -eq "81" ]]; then
+   offset1=14
+else
+   offset1=12
+fi
+
+privLen=$((0x"${derHex:offset1:2}"))
+priv2=${derHex:offset1+2:privLen}
+oidPos="$((2*$privLen+offset1+6))"
 oidLen=$((0x"${derHex:oidPos+2:2}"))
 oid="${derHex:oidPos:4}""${derHex:oidPos+4:oidLen*2}"
+pubLen=$((1+ ${#pub}/2))
+pubLenHex=`printf "%02x" $((pubLen))`
+echo "derHex:" "$derHex"
+echo "pubLenHex" "$pubLenHex" "pubLen" "$pubLen"
+echo "privLen" "$privLen" 
+echo "oidPos" "$oidPos" 
+echo "oidLen" "$oidLen" 
+
 echo "{">"$outFile"
 echo `buildJsonLine "type" "ECDH" ","`>>"$outFile"
 echo `buildJsonLine "priv" "$priv" ","`>>"$outFile"
