@@ -8,12 +8,15 @@ function hexStringToBin() {
    echo "$1" | xxd -r -p|cat
 }
 
+
 function getAsn1Tag() {
-   temp="$((${#1}/2))"
-   if [[ "$temp" -gt 127 ]]; then
-	echo "81"`printf "%02x" "$temp"`"$1"
-   else
-	echo `printf "%02x" "$temp"`"$1"
+   temp="$((${#2}/2))"
+   if [[ "$temp" -gt 255 ]]; then
+     echo "$1""82"`printf "%04x" "$temp"`"$2"
+     elif [[ "$temp" -gt 127 ]]; then
+        echo "$1""81"`printf "%02x" "$temp"`"$2"
+     else
+        echo "$1"`printf "%02x" "$temp"`"$2"
    fi
 }
 
@@ -27,9 +30,6 @@ if [[ -z "$2" ]]; then
 else   
    outfile="$2"
 fi
-
-
-
 #-----------------------------------------------------------------------------
 # Read the json to variables
 #-----------------------------------------------------------------------------
@@ -41,19 +41,32 @@ curve=`jsonval2 "$json" curve`
 curveOID=`jsonval2 "$json" curveOID`
 # https://stackoverflow.com/questions/48101258/how-to-convert-an-ecdsa-key-to-pem-format
 # build object ID string to identify the curve 
-echo "curveOID" "$curveOID"
-objectIDstr="a0"`printf "%02x" $((${#curveOID}/2))`"$curveOID"
-privLen=`printf "%02x" $((${#priv}/2))`
+if [[ -z "$curveOID" ]]; then
+   declare -A curvemap 
+   while IFS=, read -r key val
+   do
+      curvemap["$key"]="$val" 
+   done < map/curvemap.csv
+   curveOID="${curvemap["$curve"]}"
+   echo "no curveOID passed finding in map with curvename:" "$curve" " found:" "$curveOID"
 
+fi
 
-pubStr="03"`getAsn1Tag "00""$pub"`
-pubLen=`printf "%02x" $((${#pubStr}/2))`
-pubTag="a1"`getAsn1Tag "$pubStr"`
+objectIDstr=`getAsn1Tag "a0" "$curveOID"`
 
-privTag="02010104"`getAsn1Tag "$priv"`
-full="$privTag""$objectIDstr""$pubTag"
-der="30"`getAsn1Tag "$full"`
-echo "$der"
-hexStringToBin "$der">derdump.der
+if [[ -z "$pub" ]]; then
+   echo "no pub"
+   pubTag=""
+else
+   pubStr=`getAsn1Tag "03" "00""$pub"`
+   pubTag=`getAsn1Tag "a1" "$pubStr"`
+fi
+
+begin="020101"
+privTag=`getAsn1Tag "04" "$priv"`
+full="$begin""$privTag""$objectIDstr""$pubTag"
+der=`getAsn1Tag "30" "$full"`
+
+# hexStringToBin "$der">derdump.der
 hexStringToBin "$der"|openssl ec -inform d>"$outfile"
 

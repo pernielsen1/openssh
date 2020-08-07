@@ -1,7 +1,7 @@
 {
 "type":"ECDH",
-"priv":"e2888eacfe87e79a3dcf190f62cfb2b4aa904719d1a86f86",
-"pub":"040b484600c2c862a2a679c87a2c040fcef102a9caf5baedf1f9ae6356e224b91a84d4ea8687e49a6ab8ac883f85107cbd",
+"priv":"2f38d26ec10cf86ef245841adeb43fd8997bc7ff9d4a33c1",
+"pub":"04f0437f078c3e92e9b1445f212a65db82070ec36ec7031c793148d77caa997f3c0f66e875bfa84d211f2c9fdf8957daed",
 "curveOID":"06082a8648ce3d030101",
-"curve":"prime192v1NISTCURVEP"
+"curve":"prime192v1"
 }

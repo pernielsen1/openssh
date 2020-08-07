@@ -34,6 +34,7 @@ temp=${temp//$'Private-Key:'/$'\nPrivate_Key='}
 temp=${temp//$'priv:'/$'\npriv='}
 temp=${temp//$'pub:'/$'\npub='}
 temp=${temp//$'ASN1OID:'/$'\nASN1OID='}
+temp=${temp//$'NISTCURVE:'/$'\nNISTCURVE='}
 temp=${temp//$'writing:'/$'\nwriting'}
 temp=${temp//$'-----BEGIN'/$'\n:-----BEGIN'}
 temp=${temp//$':'/}

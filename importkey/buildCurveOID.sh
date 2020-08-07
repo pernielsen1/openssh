@@ -10,6 +10,7 @@ function strindex() {
   [[ "$x" = "$1" ]] && echo -1 || echo "${#x}"
 }
 temp=`openssl ecparam -list_curves`
+echo "curveName, curveOID">map/curvemap.csv
 i=0
 while read -r line
 do 
@@ -32,6 +33,7 @@ do
          curveName=`jsonval2 "$json" curve`
          curveOID=`jsonval2 "$json" curveOID`
          echo "curveName:" "$curveName" " curveOID:" "$curveOID"
+	 echo "$curveName"",""$curveOID">>map/curvemap.csv 
          ./importkey.sh curves/"$curve".json curves/"$curve".copy.pem
          diff curves/"$curve".copy.pem curves/"$curve".pem
          error=$?
@@ -50,5 +52,6 @@ do
   fi
    
 done <<<"$temp"
+cat map/curvemap.csv
 exit 0
 

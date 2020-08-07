@@ -1,4 +1,5 @@
-# openssh
+# Just run gitpush it's located in bin folder
+#
 # dafs
 # dfsadf nr 2
 # line 4
