@@ -1,8 +1,11 @@
 {
-"cipher":"e5WhSaehrP2kD0b56Y7AwroaukPQSRKjKt1sLCruvwRg7R54rBzZW0jdw8HM7MAQ6peFBg==",
+"cipher":"fQiYFZCmlZAU7AlTJBrPZHFtamdotN5y+5+M/ue+W73Vn4b29iNp99WpBsY0CcDJYw2m7Q==",
 "otherInfo":"SGVyZSBpcyBzb21lIG90aGVyIGluZm8K",
-"iv":"ij9BM10oxnLqIF5LH+JJPg==",
-"signature":"MEQCICAwzPp3RVMwLg5lnaPcWabOF5J+YfGwtbcKWq/wf8L/AiB2R72E/hA9iCoXW+x+Abgq6sk1Mnmnu5ccLPOl/bLurQ==",
+"iv":"hFsxGyg/VD6+WWneJWBTLw==",
+"signature":"MEQCIHfNF+E7IN0l0Pth9IN0rwefTwwenlml3j8T0s+j/PGSAiB+2haTHhw6ffvgGVpjY55CiyB9xYg4M6eopvM/olwW8g==",
 "receiverPrivate":"keys/BobPrivate.pem",
 "senderPublic":"keys/AlicePublic.pem",
+"debugSharedSecret":"ca3c2944ef4d7fcacfa06ae491ce303fae8f7cda53f99f8c5f71b4fcbcb8bc50",
+"debugKey":"4de4852062066e36e495826c56c95f94de0fa8aa88cade83a30a657e79ba8df6",
+"debugCipherHex":"7d08981590a6959014ec0953241acf64716d6a6768b4de72fb9f8cfee7be5bbdd59f86f6f62369f7d5a906c63409c0c9630da6ed"
 }

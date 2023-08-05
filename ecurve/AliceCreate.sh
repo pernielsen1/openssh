@@ -59,29 +59,40 @@ function binFileToBase64String() {
 
 # Here we go
 jsonFile="AliceCreate.json"
+if [ "$#" -ge 1 ]
+then
+jsonFile="$1"
+fi
+
+echo "reading:" "$jsonFile"
 json=`cat $jsonFile`
 senderPrivate=`jsonval2 "$json"  senderPrivate`
 receiverPublic=`jsonval2 "$json"  receiverPublic`
 plainFile=`jsonval2 "$json"  plainFile`
 otherInfo=`jsonval2 "$json"  otherInfo`
-iv=`jsonval2 "$json"  iv`
+iv=`jsonval2 "$json" iv`
 echo "senderPrivate:" "$senderPrivate"
 echo "receiverPublic:" "$receiverPublic"
 echo "plainFile:" "$plainFile"
 echo "otherInfo:" "$otherInfo"
 echo "iv:" "$iv"
+echo "padding:" "$padding"
 if [ -z "$iv" ]; then
    openssl rand -out output/randomiv.bin 16
    iv=`binFileToBase64String output/randomiv.bin`
 fi
+base64StringToBin "$otherInfo">output/otherInfo.bin
+otherInfoHex=`binFileToHexString output/otherInfo.bin`
+echo "otherInfo:" "$otherInfo"
+echo "otherInfoHex:" "$otherInfoHex"
+
 base64StringToBin "$iv">output/iv.bin
 ivHex=`binFileToHexString output/iv.bin`
 echo "iv:" "$iv"
 echo "ivHex:" "$ivHex"
 
 
-
-#------------------------------------------------------------
+#---------------------------	---------------------------------
 # derive the shared secret
 #------------------------------------------------------------
 openssl pkeyutl -derive -inkey  "$senderPrivate" -peerkey "$receiverPublic" -out output/shared_secret.bin
@@ -90,7 +101,7 @@ shared_secret=`binFileToHexString output/shared_secret.bin`
 # generate the key according to NIST
 # The integer 00000001 + shared secret + other info and calculate a sha256
 #-------------------------------------------------------------------------
-message="00000001""$shared_secret""$otherinfo"
+message="00000001""$shared_secret""$otherInfoHex"
 hexStringToBin "$message">output/message.bin
 openssl dgst -sha256 -binary output/message.bin>output/key.bin
 key=`binFileToHexString output/key.bin`
@@ -100,8 +111,11 @@ key=`binFileToHexString output/key.bin`
 #-------------------------------------------------------------------------
 # openssl cli does not support gcm functions so use a c program that interfaces directly instead
 # openssl enc -aes-256-gcm  -in "$odir"/plain.txt -out "$odir"/cipher.bin -K "$key" -iv $iv
-./openssl_aes_gcm "$plainFile" output/cipher.bin "$key" "$ivHex" e
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+"$SCRIPT_DIR"/openssl_aes_gcm "$plainFile" output/cipher.bin "$key" "$ivHex" e
+# ./openssl_aes_gcm "$plainFile" output/cipher.bin "$key" "$ivHex" e
 cipher=`binFileToBase64String output/cipher.bin`
+cipherHex=`binFileToHexString output/cipher.bin`
 #--------------------------------------------------------------------------
 # create signature 
 #-------------------------------------------------------------------------
@@ -118,6 +132,10 @@ echo `buildJsonLine "iv" "$iv" ","`>>json.txt
 echo `buildJsonLine "signature" "$signature" ","`>>json.txt
 echo `buildJsonLine "receiverPrivate" "keys/BobPrivate.pem" ","`>>json.txt
 echo `buildJsonLine "senderPublic" "keys/AlicePublic.pem" ","`>>json.txt
+echo `buildJsonLine "debugSharedSecret" "$shared_secret" ","`>>json.txt
+echo `buildJsonLine "debugKey" "$key" ","`>>json.txt
+echo `buildJsonLine "debugCipherHex" "$cipherHex" ""`>>json.txt
+
 
 echo "}">>json.txt
 cat json.txt

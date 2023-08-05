@@ -33,7 +33,6 @@ void file_encrypt_decrypt(FILE *ifp, FILE *ofp){
     unsigned char tmp_tag[TAGSIZE];	
     int num_bytes_read, out_len;
     int offset, num_bytes;
-    int i;
     EVP_CIPHER_CTX *ctx;
     ctx = EVP_CIPHER_CTX_new();
     if(ctx == NULL){
@@ -73,9 +72,6 @@ void file_encrypt_decrypt(FILE *ifp, FILE *ofp){
 	else {
 	   if (offset) {
 	      memcpy(tmp_buf, tmp_tag, offset);
-		for (int i=0; i < offset; i++)
-			printf("%#x ", tmp_tag[i]);	
-		
            }
 	   memcpy(tmp_buf + offset, in_buf, num_bytes_read - TAGSIZE);
 	   memcpy(tmp_tag, in_buf + num_bytes_read - TAGSIZE, TAGSIZE);
@@ -175,3 +171,9 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+{
+"cipher":"MB6Odsdr0ZdVwDD3cyNA3yyLkWp9Z+NWWwZPHgEs",
+"iv":"AAAAAAAAAAAAAAAAAAAAAA==",
+"senderPublic":"BAEvSJtVliiAZP+ZSxD4/8f35qL+qLIzUAFt5SRECAEK45iohoz9pqxj+xp5/5cIJ+WuSSxboeL+/5BwmXaEzII="
+}
+

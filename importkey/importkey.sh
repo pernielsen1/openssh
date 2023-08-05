@@ -30,6 +30,10 @@ if [[ -z "$2" ]]; then
 else   
    outfile="$2"
 fi
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+mapfile="$SCRIPT_DIR""/map/curvemap.csv"
+echo "$mapfile"
+
 #-----------------------------------------------------------------------------
 # Read the json to variables
 #-----------------------------------------------------------------------------
@@ -46,7 +50,7 @@ if [[ -z "$curveOID" ]]; then
    while IFS=, read -r key val
    do
       curvemap["$key"]="$val" 
-   done < map/curvemap.csv
+   done < $mapfile
    curveOID="${curvemap["$curve"]}"
    echo "no curveOID passed finding in map with curvename:" "$curve" " found:" "$curveOID"
 
@@ -60,13 +64,34 @@ if [[ -z "$pub" ]]; then
 else
    pubStr=`getAsn1Tag "03" "00""$pub"`
    pubTag=`getAsn1Tag "a1" "$pubStr"`
+   begin=""
 fi
 
-begin="020101"
-privTag=`getAsn1Tag "04" "$priv"`
-full="$begin""$privTag""$objectIDstr""$pubTag"
+if [[ -z "$priv" ]]; then
+   echo "no priv"
+   privTag=""
+   objectIDstr=`getAsn1Tag "30" "06072a8648ce3d0201""$curveOID"`
+
+   full="$objectIDstr""$pubStr"
+
+else
+   privTag=`getAsn1Tag "04" "$priv"`
+   begin="020101"
+   full="$begin""$privTag""$objectIDstr""$pubTag"
+
+
+fi
+
+## privTag=`getAsn1Tag "04" "$priv"`
 der=`getAsn1Tag "30" "$full"`
 
 # hexStringToBin "$der">derdump.der
-hexStringToBin "$der"|openssl ec -inform d>"$outfile"
 
+if [[ -z "$priv" ]]; then
+echo "no priv import" 
+hexStringToBin "$der"|openssl ec -pubin -inform d>"$outfile"
+
+else
+echo "prim import"
+hexStringToBin "$der"|openssl ec -inform d>"$outfile"
+fi

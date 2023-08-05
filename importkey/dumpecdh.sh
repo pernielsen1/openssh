@@ -70,26 +70,28 @@ oidLen=$((0x"${derHex:oidPos+2:2}"))
 oid="${derHex:oidPos:4}""${derHex:oidPos+4:oidLen*2}"
 pubLen=$((1+ ${#pub}/2))
 pubLenHex=`printf "%02x" $((pubLen))`
-echo "derHex:" "$derHex"
-echo "pubLenHex" "$pubLenHex" "pubLen" "$pubLen"
-echo "privLen" "$privLen" 
-echo "oidPos" "$oidPos" 
-echo "oidLen" "$oidLen" 
 
-# echo "{">"$outFile"
-# echo `buildJsonLine "type" "ECDH" ","`>>"$outFile"
-# echo `buildJsonLine "priv" "$priv" ","`>>"$outFile"
-# echo `buildJsonLine "pub" "$pub" ","`>>"$outFile"
-# echo `buildJsonLine "curveOID" "$oid" ","`>>"$outFile"
-# echo `buildJsonLine "curve" "$ASN1OID" ""`>>"$outFile"
-# echo "}">>"$outFile"
 
-echo "type=ECDH">"$outFile"
-echo "priv=""$priv">>"$outFile"
-echo "pub=""$pub">>"$outFile"
-echo "curve=""ASN1OID">>"$outFile"
-echo "curveOID=""$oid">>"$outFile"
-cat "$outFile"
+# echo "derHex:" "$derHex"
+# echo "pubLenHex" "$pubLenHex" "pubLen" "$pubLen"
+# echo "privLen" "$privLen" 
+# echo "oidPos" "$oidPos" 
+# echo "oidLen" "$oidLen" 
+
+echo "{">"$outFile"
+echo `buildJsonLine "type" "ECDH" ","`>>"$outFile"
+echo `buildJsonLine "priv" "$priv" ","`>>"$outFile"
+echo `buildJsonLine "pub" "$pub" ","`>>"$outFile"
+echo `buildJsonLine "curveOID" "$oid" ","`>>"$outFile"
+echo `buildJsonLine "curve" "$ASN1OID" ""`>>"$outFile"
+echo "}">>"$outFile"
+
+# echo "type=ECDH">"$outFile"
+# echo "priv=""$priv">>"$outFile"
+# echo "pub=""$pub">>"$outFile"
+# echo "curve=""ASN1OID">>"$outFile"
+# echo "curveOID=""$oid">>"$outFile"
+# cat "$outFile"
 
 
 
